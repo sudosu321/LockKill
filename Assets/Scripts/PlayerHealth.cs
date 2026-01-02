@@ -4,8 +4,8 @@ public class PlayerHealth : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public float playerHealth=100f;
-    public Enemy enemy;
     public bool isAlive=true;
+    public Explosion explosion;
     public void Damage(float min,float max)
     {
         if (isAlive)
@@ -17,11 +17,16 @@ public class PlayerHealth : MonoBehaviour
             if (playerHealth < 0f)
             {
                 isAlive=false;
+                Invoke("destruct",1);
             }
         }
         else
         {
             Debug.Log("Player Dead");
         }
+    }
+    void destruct()
+    {
+        explosion.Explode();
     }
 }

@@ -21,7 +21,10 @@ public class Sphere : Interactable
     protected override void Interact()
     {
         doorOpen=!doorOpen;
+        Debug.Log("DOOR STATE" +doorOpen);
         door.GetComponent<Animator>().SetBool("isOpen",doorOpen);
-        obstacle.enabled=!doorOpen; 
+        obstacle.enabled=doorOpen; 
+
+        Debug.Log("OBSTACLE STATE" +doorOpen);
     }
 }

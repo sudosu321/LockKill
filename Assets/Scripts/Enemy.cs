@@ -1,4 +1,5 @@
 using System;
+using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -59,6 +60,13 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        if (agent.isStopped == true)
+        {
+            if (attack == false && playerDetected==true)
+            {
+                agent.isStopped=false;
+            }
+        }
         if (enemy.isAlive)
         {
             
@@ -192,12 +200,20 @@ public class Enemy : MonoBehaviour
 
     void ChasePlayer()
     {
+        if (agent.pathStatus == NavMeshPathStatus.PathInvalid)
+        {
+            Debug.Log("❌ INVALID PATH");
+        }
+        else if (agent.pathStatus == NavMeshPathStatus.PathPartial)
+        {
+            Debug.Log("⚠ PARTIAL PATH");
+        }
         FacePlayer();
         AngryEyes();
         agent.isStopped = false;
         LowerHand();
 
-        if (agent.remainingDistance > agent.stoppingDistance)
+        //if (agent.remainingDistance > agent.stoppingDistance)
             agent.SetDestination(player.position);
     }
     void FacePlayer()
@@ -222,6 +238,11 @@ public class Enemy : MonoBehaviour
         if (patrolPoints.Length == 0)
             return;
 
+        //agent.isStopped = false;
+
+        // 🔴 THIS IS THE FIX
+        agent.SetDestination(patrolPoints[currentPoint].position);
+
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
             waitCounter += Time.deltaTime;
@@ -229,7 +250,6 @@ public class Enemy : MonoBehaviour
             if (waitCounter >= waitTime)
             {
                 currentPoint = (currentPoint + 1) % patrolPoints.Length;
-                agent.SetDestination(patrolPoints[currentPoint].position);
                 waitCounter = 0f;
             }
         }
